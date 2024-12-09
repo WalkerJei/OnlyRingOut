@@ -3,22 +3,6 @@ using UnityEngine.InputSystem;
 
 public class Player : Unit
 {
-    // 플레이어 이동 여부
-    private bool isMove;
-    public bool IsMove
-    {
-        get { return isMove; }
-        set { isMove = value; }
-    }
-
-    // 플레이어 도약 여부
-    private bool isJump;
-    public bool IsJump
-    {
-        get { return isJump; }
-        set { isJump = value; }
-    }
-
     // 게임 일시정지 여부
     private bool isPaused;
     public bool IsPaused
@@ -27,31 +11,20 @@ public class Player : Unit
         set { isPaused = value; }
     }
 
-    // 플레이어 장외(경기장 밖으로 추락) 여부
-    private bool isDead;
-    public bool IsDead
-    {
-        get { return isDead; }
-        set { isDead = value; }
-    }
-
     private Vector2 turnDirection;
     public Vector2 TurnDirection
     {
         get { return turnDirection; }
         set { turnDirection = value; }
     }
-    
 
-    SpriteRenderer spriteRenderer;
     new Rigidbody2D rigidbody2D;
-
+    
     GameObject playerWeapon;
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        rigidbody2D = GetComponent<Rigidbody2D>();   
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -59,6 +32,7 @@ public class Player : Unit
     {
         IsPaused = false;
         IsDead = false;
+        IsJump = false;
 
         transform.position = new Vector2(0, 0);
     }
@@ -72,7 +46,6 @@ public class Player : Unit
     void FixedUpdate()
     {
         MoveHorizontal();
-        
     }
 
     // 플레이어 이동 조작
@@ -120,7 +93,7 @@ public class Player : Unit
     // 위로 도약하는 조작
     public void OnJump(InputAction.CallbackContext inputAction)
     {
-        if (inputAction.started && !IsJump)
+        if (inputAction.started && IsJump == false)
         {
             IsJump = true;
             rigidbody2D.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);

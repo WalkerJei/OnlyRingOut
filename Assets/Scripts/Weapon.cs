@@ -86,7 +86,6 @@ public class Weapon : MonoBehaviour
         set { weaponPosition = value; }
     }
 
-    SpriteRenderer spriteRenderer;
     Unit unit;
 
     private void Awake()
@@ -98,7 +97,6 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         WeaponPosition = transform.position;
-        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame

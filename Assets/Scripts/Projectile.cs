@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    // 투사체의 속도
     public float projectileSpeed;
     public float ProjectileSpeed
     {
@@ -10,6 +11,7 @@ public class Projectile : MonoBehaviour
         set { projectileSpeed = value; }
     }
 
+    // 투사체의 공격력으로 높을수록 더 멀리 밀어낼 수 있다
     public byte damageValue;
     public byte DamageValue
     {
@@ -17,6 +19,7 @@ public class Projectile : MonoBehaviour
         set { damageValue = value; }
     }
 
+    // 투사체의 유효 사거리
     public float range;
     public float Range
     {
@@ -30,8 +33,6 @@ public class Projectile : MonoBehaviour
         get { return projectileDirection; }
         set { projectileDirection = value; }
     }
-
-    
 
     new Rigidbody2D rigidbody2D = null;
     Player player;
@@ -68,7 +69,6 @@ public class Projectile : MonoBehaviour
         
         transform.Translate(Vector2.right * projectileSpeed * Time.deltaTime);
         
-        
         //float projectileAngle = Mathf.Atan2(ProjectileDirection.y, ProjectileDirection.x) * Mathf.Rad2Deg;
         //rigidbody2D.linearVelocity = Quaternion.Euler(0,0,projectileAngle) * Vector3.forward * projectileSpeed * Time.deltaTime;
     }
@@ -77,13 +77,17 @@ public class Projectile : MonoBehaviour
     {
         IDamageable damageable = other.GetComponent<IDamageable>();
 
+        // 플레이어가 발사한 투사체, 게임 컨트롤러, 플레이어와 충돌한 경우 투사체가 사라지지 않는다
         if (damageable != null && (other.gameObject.tag == "PlayerProjectile" || other.gameObject.tag == "GameController" || other.gameObject.tag == "Player"))
            return;
+        // 지형과 충돌한 경우 투사체가 사라진다
         else if(other.gameObject.tag == "Terrain")
             Destroy(gameObject);
-        else if (damageable != null || other.gameObject.tag == "Enemy")
+        // 
+        else if (damageable != null && other.gameObject.tag == "Enemy")
         {
             Destroy(gameObject);
+            damageable.OnDamaged(damageValue, transform.position);
         }
     }
 }

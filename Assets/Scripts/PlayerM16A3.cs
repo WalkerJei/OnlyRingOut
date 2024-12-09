@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class M16A3 : PlayerWeapon
+public class PlayerM16A3 : PlayerWeapon
 {
     Player player;
 
@@ -19,13 +19,13 @@ public class M16A3 : PlayerWeapon
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public override void NormalAttack(InputAction.CallbackContext inputAction)
     {
         GameObject bullet = Instantiate(bulletNormal, transform.position, Quaternion.AngleAxis(WeaponAngle, Vector3.forward));
 
-        
+
     }
 }
