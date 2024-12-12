@@ -3,11 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerM16A3 : PlayerWeapon
 {
-    Player player;
-
     private void Awake()
     {
-        player = GetComponent<Player>();
+        
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

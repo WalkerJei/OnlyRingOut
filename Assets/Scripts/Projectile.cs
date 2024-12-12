@@ -35,13 +35,13 @@ public class Projectile : MonoBehaviour
     }
 
     new Rigidbody2D rigidbody2D = null;
-    Player player;
+    //Player player;
 
     private void Awake()
     {
         if(rigidbody2D == null) rigidbody2D = GetComponent<Rigidbody2D>();
 
-        player = GetComponent<Player>();
+        //player = GetComponent<Player>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
