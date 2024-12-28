@@ -35,59 +35,19 @@ public class Projectile : MonoBehaviour
     }
 
     new Rigidbody2D rigidbody2D = null;
-    //Player player;
 
     private void Awake()
     {
         if(rigidbody2D == null) rigidbody2D = GetComponent<Rigidbody2D>();
-
-        //player = GetComponent<Player>();
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-        
     }
 
     private void FixedUpdate()
     {
-        OnMove();
-        
+        OnMove();        
     }
 
     void OnMove()
     {
-        
         transform.Translate(Vector2.right * projectileSpeed * Time.deltaTime);
-        
-        //float projectileAngle = Mathf.Atan2(ProjectileDirection.y, ProjectileDirection.x) * Mathf.Rad2Deg;
-        //rigidbody2D.linearVelocity = Quaternion.Euler(0,0,projectileAngle) * Vector3.forward * projectileSpeed * Time.deltaTime;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        IDamageable damageable = other.GetComponent<IDamageable>();
-
-        // 플레이어가 발사한 투사체, 게임 컨트롤러, 플레이어와 충돌한 경우 투사체가 사라지지 않는다
-        if (damageable != null && (other.gameObject.tag == "PlayerProjectile" || other.gameObject.tag == "GameController" || other.gameObject.tag == "Player"))
-           return;
-        // 지형과 충돌한 경우 투사체가 사라진다
-        else if(other.gameObject.tag == "Terrain")
-            Destroy(gameObject);
-        // 
-        else if (damageable != null && other.gameObject.tag == "Enemy")
-        {
-            Destroy(gameObject);
-            damageable.OnDamaged(damageValue, transform.position);
-        }
     }
 }

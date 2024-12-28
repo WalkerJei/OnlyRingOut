@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.InputSystem;
+﻿using NUnit.Framework.Constraints;
+using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
@@ -14,89 +15,73 @@ public class Weapon : MonoBehaviour
     public float range;
     // 보유한 탄창
     public byte ammo;
+    public byte Ammo
+    {
+        get { return ammo; }
+        set { if (ammo >= 0 && ammo <= MaxAmmo) ammo = value; }
+    }
     // 최대 보유 탄창 수
-    public byte maxAmmo;
+    private byte maxAmmo;
+    public byte MaxAmmo
+    {
+        get { return maxAmmo; }
+        set { if (maxAmmo >= 0 && maxAmmo <= 4) ammo = value; }
+    }
     // 탄창 1개당 탄환의 수
     public byte bulletPerAmmo;
     // 탄환 발사 후 차탄 발사까지의 걸리는 시간
     public float fireRate;
     // 행동 시작부터 종료까지의 걸리는 시간
-    public float activeTime;
+    private float activeTime;
+    public float ActiveTime
+    {
+        get { return activeTime; }
+        set { activeTime = bulletPerAmmo * fireRate; }
+    }
     // 행동 종료 후 행동을 다시 하는데 걸리는 시간
     public float coolDown;
+    public float CoolDown
+    {
+        get { return coolDown; }
+        set { if (coolDown >= 0) coolDown = value; } 
+    }
+
     // 재장전에 걸리는 시간
     public float reloadRate;
+    public float ReloadRate
+    {
+        get { return reloadRate; }
+        set { if (reloadRate >= 0) reloadRate = value; }
+    }
 
     // 현재 보유 탄창 수
     private byte currentAmmo;
     public byte CurrentAmmo
     {
         get { return currentAmmo; }
-        set { if(currentAmmo >= 0 && currentAmmo <= maxAmmo) currentAmmo = value; }
-    }
-
-    // 현재 탄환을 발사한 후 차탄 발사까지 걸리는 시간
-    private float currentFireRate = 0f;
-    public float CurrentFireRate
-    {
-        get { return currentFireRate; }
-        set { if (currentFireRate >= 0f) currentFireRate = value; }
-    }
-
-    // 현재 행동 시작부터 종료까지 걸리는 시간
-    private float currentActiveTime;
-    public float CurrentActiveTime
-    {
-        get { return currentActiveTime; }
-        set { if (currentActiveTime >= 0f) currentActiveTime = value; }
-    }
-
-    // 현재 행동 종료부터 행동 재개까지 걸리는 시간
-    private float currentCoolDown;
-    public float CurrentCoolDown
-    {
-        get { return currentCoolDown; }
-        set { if (currentCoolDown >= 0f) currentCoolDown = value; }
-    }
-
-    // 현재 무기 재장전을 하는 데 걸리는 시간
-    private float currentReloadRate;
-    public float CurrentReloadRate
-    {
-        get { return currentReloadRate; }
-        set { if (currentReloadRate >= 0f) currentReloadRate = value; }
+        set { if(currentAmmo >= 0 && currentAmmo <= MaxAmmo) currentAmmo = value; }
     }
 
     // 무기의 조준 각도
     private float weaponAngle;
     public float WeaponAngle
     {
-        get { return weaponAngle; }
-        set 
-        {
-           weaponAngle = value;
-        }
+        get { return weaponAngle; } set { weaponAngle = value; }
     }
 
     // 무기의 위치
     private Vector2 weaponPosition;
     public Vector2 WeaponPosition
     {
-        get { return weaponPosition; }
-        set { weaponPosition = value; }
-    }
-
-    Unit unit;
-
-    private void Awake()
-    {
-        
+        get { return weaponPosition; } set { weaponPosition = value; }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         WeaponPosition = transform.position;
+        // 현재 가지고 있는 총알의 수를 Ammo에 입력한 값으로 설정
+        CurrentAmmo = Ammo;
     }
 
     // Update is called once per frame
@@ -107,13 +92,47 @@ public class Weapon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+ 
     }
 
-    
+    // 액티브 타임 진행
+    public IEnumerator ActiveTimeCalc()
+    {
+        // 액티브 타임을 변수에 담아 가비지 컬렉터 대상에서 배제
+        var wfsActiveTime = new WaitForSeconds(ActiveTime);
+        // 재장전을 멈춘다.
+        StopCoroutine("ReloadRateCalc");
+        // 액티브 타임 상태에 진입
+        yield return wfsActiveTime;
+        // 액티브 타임 종료 후 쿨다운에 진입
+        StartCoroutine("CoolDownCalc");
+        // 액티브 타임 종료 후 재장전을 시작
+        StartCoroutine("ReloadRateCalc");
+    }
 
-    
+    // 쿨다운 진행
+    public IEnumerator CoolDownCalc()
+    {
+        // 쿨다운을 변수에 담아 가비지 컬렉터 대상에서 배제
+        var wfsCoolDown = new WaitForSeconds(CoolDown);
+        // 쿨다운 상태에 진입
+        yield return wfsCoolDown;
+        // 플레이어는 공격 중인 상태가 해제
+        Player.Instance.unitState &= ~Unit.UnitState.Attack;
+    }
 
-    
-
+    // 재장전 시간 계산
+    public IEnumerator ReloadRateCalc()
+    {
+        // 탄창이 가득 차지 않았을 때
+        while (currentAmmo <= maxAmmo) 
+        { 
+            // 재장전 시간을 변수에 담아 가비지 컬렉터 대상에서 배제
+            var wfsReloadRate = new WaitForSeconds(ReloadRate);
+            // 재장전 시작
+            yield return wfsReloadRate;
+            // 재장전을 하면서 탄창을 하나 채운다
+            currentAmmo++;
+        }
+    }
 }

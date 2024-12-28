@@ -3861,13 +3861,11 @@ MonoBehaviour:
   bulletUltimate: {fileID: 0}
   damageValue: 10
   range: 6
-  ammo: 0
-  maxAmmo: 0
-  bulletPerAmmo: 0
-  fireRate: 1
-  activeTime: 0
-  coolDown: 0
-  reloadRate: 0
+  ammo: 4
+  bulletPerAmmo: 5
+  fireRate: 0.15
+  coolDown: 0.5
+  reloadRate: 1
 --- !u!1 &681013050
 GameObject:
   m_ObjectHideFlags: 0
@@ -4041,7 +4039,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 4
   moveSpeed: 5
-  jumpPower: 15
+  jumpPower: 10
 --- !u!50 &681013053
 Rigidbody2D:
   serializedVersion: 5

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class PlayerWeapon : Weapon
 {
@@ -10,23 +9,6 @@ public class PlayerWeapon : Weapon
     {
         get { return aimDirection; }
         set { aimDirection = value; }
-    }
-
-    private void Awake()
-    {
-        
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     // 마우스 움직임으로 조준
@@ -81,10 +63,11 @@ public class PlayerWeapon : Weapon
                 else if (AimDirection.x <= 0) WeaponAngle = Mathf.Clamp(WeaponAngle, -180, -100);
             }
         }
-
+        // 보정된 회전값을 반영해 조준
         transform.rotation = Quaternion.AngleAxis(WeaponAngle, Vector3.forward);
     }
 
+    // 플레이어의 일반공격
     public virtual void NormalAttack(InputAction.CallbackContext inputAction)
     {
 
